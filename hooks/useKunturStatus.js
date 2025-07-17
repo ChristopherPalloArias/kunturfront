@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useStreaming } from './useSharedStreaming';
-import { useUserRegistration } from './useUserRegistration';
 
 export const useKunturStatus = (initialStatus = 'off') => {
     const [status, setStatus] = useState(initialStatus);
@@ -9,13 +8,7 @@ export const useKunturStatus = (initialStatus = 'off') => {
 
     // Obtener funciones de streaming
     const streamingContext = useStreaming();
-    const { startAllStreams, stopAllStreams } = streamingContext || { 
-        startAllStreams: () => { }, 
-        stopAllStreams: () => { } 
-    };
-
-    // Obtener contexto de usuario - CORREGIDO: usar 'loading' no 'isLoading'
-    const { user, loading: userLoading } = useUserRegistration();
+    const { startAllStreams, stopAllStreams } = streamingContext || { startAllStreams: () => { }, stopAllStreams: () => { } };
 
     const fetchStatus = async () => {
         setLoading(true);
@@ -78,28 +71,16 @@ export const useKunturStatus = (initialStatus = 'off') => {
         }
     };
 
-    // Función para manejar el toggle de Kuntur
-    const toggleKuntur = async () => {
-        if (status === 'off') {
-            await activateKuntur();
-        } else {
-            await deactivateKuntur();
-        }
-    };
-
     useEffect(() => {
         fetchStatus();
     }, []);
 
     return {
         status,
-        loading,  // Solo el loading del hook de Kuntur
+        loading,
         error,
         activateKuntur,
         deactivateKuntur,
-        toggleKuntur,
-        refetchStatus: fetchStatus,
-        hasUser: !!user,
-        userLoading  // Devolver userLoading por separado si es necesario
+        refetchStatus: fetchStatus
     };
 };

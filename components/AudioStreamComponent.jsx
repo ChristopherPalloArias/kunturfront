@@ -1,3 +1,4 @@
+import React from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { SpeakerWaveIcon, SpeakerXMarkIcon } from 'react-native-heroicons/solid';
 import Colors from '../constant/Colors';
@@ -18,10 +19,7 @@ export default function AudioStreamComponent({
             return (
                 <View
                     key={i}
-                    style={[
-                        styles.audioBar,
-                        { height: height }
-                    ]}
+                    style={[styles.audioBar, { height: height }]}
                 />
             );
         });
@@ -37,12 +35,8 @@ export default function AudioStreamComponent({
         if (loading) {
             return (
                 <View style={styles.loadingContainer}>
-                    <View>
-                        <ActivityIndicator size="small" color={Colors.primary[500]} />
-                    </View>
-                    <View>
-                        <Text style={styles.loadingText}>Conectando audio...</Text>
-                    </View>
+                    <ActivityIndicator size="small" color={Colors.primary[500]} />
+                    <Text style={styles.loadingText}>Conectando audio...</Text>
                 </View>
             );
         }
@@ -59,9 +53,7 @@ export default function AudioStreamComponent({
         if (isStreaming) {
             return (
                 <View style={styles.streamingContainer}>
-                    <View style={
-                        { flexDirection: 'row', alignItems: 'center', gap: 10 }
-                    }>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                         <SpeakerWaveIcon size={20} color={Colors.success[900]} />
                         {renderAudioVisualizer()}
                     </View>
@@ -73,13 +65,11 @@ export default function AudioStreamComponent({
             );
         }
 
-        return (
-            <View style={styles.offlineContainer}>
-                <SpeakerXMarkIcon size={20} color={Colors.dark[400]} />
-                <Text style={styles.offlineText}>Audio desconectado</Text>
-            </View>
-        );
+        // Si no hay transmisión de audio, no renderizamos nada
+        return null;
     };
+
+    if (!isStreaming && !loading && !error) return null; // Si no hay audio ni error, no se renderiza nada
 
     return (
         <View style={styles.container}>
@@ -97,12 +87,16 @@ const styles = StyleSheet.create({
         borderRadius: 100,
         paddingHorizontal: 16,
         height: 40,
+        // Si no se está transmitiendo, no ocupes espacio extra
+        display: 'flex',
     },
     audioContent: {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         gap: 10,
+        // Si no se está transmitiendo, no mostramos contenido vacío
+        display: 'flex',
     },
     loadingContainer: {
         flexDirection: 'row',
@@ -126,17 +120,6 @@ const styles = StyleSheet.create({
         fontFamily: FontFamily.regular,
         fontSize: FontSize.xs,
         flex: 1,
-    },
-    retryButton: {
-        backgroundColor: Colors.danger[500],
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        borderRadius: 6,
-    },
-    retryButtonText: {
-        color: Colors.neutro,
-        fontFamily: FontFamily.regular,
-        fontSize: FontSize.xs,
     },
     streamingContainer: {
         flexDirection: 'row',
@@ -173,28 +156,5 @@ const styles = StyleSheet.create({
         fontFamily: FontFamily.regular,
         fontSize: FontSize.xs,
         fontWeight: 'bold',
-    },
-    audioLevelText: {
-        color: Colors.dark[600],
-        fontFamily: FontFamily.regular,
-        fontSize: FontSize.xs,
-    },
-    offlineContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 10,
-        flex: 1,
-    },
-    offlineText: {
-        color: Colors.dark[400],
-        fontFamily: FontFamily.regular,
-        fontSize: FontSize.xs,
-    },
-    offlineSubtext: {
-        color: Colors.dark[300],
-        fontFamily: FontFamily.regular,
-        fontSize: FontSize.xs,
-        fontStyle: 'italic',
     },
 });

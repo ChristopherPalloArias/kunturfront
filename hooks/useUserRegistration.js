@@ -14,13 +14,10 @@ export const UserProvider = ({ children }) => {
     const USER_STORAGE_KEY = '@kuntur_user_data';
 
 useEffect(() => {
-    console.log('=== useEffect TRIGGERED in useUserRegistration ===');
     
     const clearDataInDevelopment = async () => {
         if (__DEV__) { 
-            console.log('DESARROLLO: Limpiando AsyncStorage...');
             await AsyncStorage.removeItem(USER_STORAGE_KEY);
-            console.log('DESARROLLO: AsyncStorage limpiado');
         }
     };
     
@@ -33,32 +30,23 @@ useEffect(() => {
 }, []);
 
     const checkUserData = async () => {
-        console.log('=== checkUserData STARTED ===');
-        console.log('Current loading state:', loading);
         
         try {
-            console.log('Setting loading to TRUE');
             setLoading(true);
             
-            console.log('Getting data from AsyncStorage...');
             const userData = await AsyncStorage.getItem(USER_STORAGE_KEY);
-            console.log('Retrieved userData:', userData);
             
             if (userData) {
                 const parsedUser = JSON.parse(userData);
-                console.log('Parsed user:', parsedUser);
+                
                 setUser(parsedUser);
-                console.log('User set in state');
             } else {
-                console.log('No user data found in AsyncStorage');
             }
         } catch (error) {
             console.error('Error al verificar datos de usuario:', error);
             setError('Error al cargar datos del usuario');
         } finally {
-            console.log('Setting loading to FALSE');
             setLoading(false);
-            console.log('=== checkUserData COMPLETED ===');
         }
     };
 
@@ -190,7 +178,6 @@ useEffect(() => {
 
     const isUserRegistered = () => {
         const registered = user !== null;
-        console.log('isUserRegistered called - user:', user, 'result:', registered);
         return registered;
     };
 
@@ -203,13 +190,6 @@ useEffect(() => {
             return false;
         }
     };
-
-    console.log('=== USER PROVIDER STATE ===');
-    console.log('user:', user);
-    console.log('loading:', loading);
-    console.log('registrationLoading:', registrationLoading);
-    console.log('error:', error);
-    console.log('===========================');
 
     const value = {
         user,
